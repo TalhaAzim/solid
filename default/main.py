@@ -1,5 +1,5 @@
-from flask import Flask
-import json
+from flask import Flask, jsonify, render_template
+import os
 from immutables import Map
 
 app = Flask(__name__)
@@ -22,17 +22,17 @@ class Post(Model):
             .stream()
 
 
-@app.route("/api/published_posts")
-def published_posts():
+@app.route("/api/posts")
+def posts():
     posts = Post.get_published()
-    return json.dumps(
-        [ {'id': post.id, **post.to_dict()} for post in posts],
-        default=str
+    return jsonify(
+        [ {'id': post.id, **post.to_dict()} for post in posts]
     )
 
 @app.route("/")
 def index():
-    posts = Post.get_published()
+    return render_template('index.html')
+    """posts = Post.get_published()
     return "".join([
         "<html>",
         "<head>",
@@ -43,19 +43,16 @@ def index():
         "<header><h1>Solid Blog Simulation</h1></header>",
         "<div id=\"app\">",
         "<article v-bind:id=\"post.id\" v-for=\"post of posts\">",
-        "<header><h1>{{ post.title }} by {{ post.author.name }}</h1></header>",
+        "<header><h1>{{ post.title }} by {{ post.author.name }} on <time v-bind:datetime=\"post.date_published\">{{ post.date_published }}</time></h1></header>",
         "<div v-html=\"post.body\"></div>",
         "</article>",
         "</div>",
         "<script type=\"text/javascript\">",
-        f'var app = new Vue({{'
-        f'el: "#app",'
-        f'data: {{ posts: {json.dumps([{"id": post.id, **post.to_dict()} for post in posts], default=str)}}}'
-        f'}})',
+        
         "</script>",
         "</body>",
         "</html>"
-    ])
+    ])"""
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=8080, debug=True)
