@@ -15,7 +15,7 @@ Vue.component('blog-post', {
         <div v-html="post.body"></div>
         <footer>
             <ul>
-                <li class="badge bg-primary text-light" v-for="tag of post.tags">{{ tag }}</li>
+                <li class="badge bg-primary text-light" v-for="tag of post.tags" :data-tag="tag">{{ tag }}</li>
             </ul>
         </footer>
     </article>`
@@ -28,5 +28,5 @@ Vue.component('blog-roll', {
     </ul>`
 })
 
-fetch("https://solid-blog-simulation.uc.r.appspot.com/api/posts")
+fetch("/api/posts")
         .then(r => r.json()).then(j => vm.posts = j);
